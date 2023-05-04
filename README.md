@@ -1,20 +1,10 @@
 <h1 align="center">
-  <img alt="cgapp logo" src="https://github.com/ebpfshield-io/certificates/blob/main/ebpf%20-%20Copy.PNG" width="284px"/><br/>
+  <img alt="cgapp logo" src="https://github.com/sagarbhure/certificates/blob/main/ebpf%20-%20Copy.PNG" width="284px"/><br/>
   <p>Advanced IP-Intelligence & DNS Monitoring using eBPF</p>
 </h1>
 <p align="center"><b>🛡️ Advanced host monitoring and threat detection with eBPF 🛡️</b></p>
 
 <p align="center"><b>eBPFShield</b> is a high-performance <b>security tool</b> that utilizes eBPF and Python to provide real-time <b>IP-Intelligence</b> and <b>DNS monitoring</b>. By executing in kernel space, eBPFShield avoids costly context switches and offers efficient <b>detection</b> and <b>prevention</b> of malicious behavior on your network through monitoring of outbound connections and comparison with <b>threat intelligence</b> feeds. 🔍 </p>
-<div align='center'>
-<a href='https://github.com/ebpfshield-io/eBPFShield/releases'>
-
-<img src='https://img.shields.io/github/v/release/chroline/well_app?color=%23FDD835&label=version&style=for-the-badge'>
-
-</a>
-
-<a href='https://github.com/ebpfshield-io/eBPFShield/blob/main/LICENSE'>
-
-<img src='https://img.shields.io/github/license/chroline/well_app?style=for-the-badge'>
 
 </div>
 
@@ -191,4 +181,4 @@ Would you like to contribute to this project? CONTRIBUTING.md has all the detail
 
 ## 🙋‍ Author
 
-Developed by [@sagarbhure](https://www.github.com/ebpfshield-io) 🔨 with ❤️ and ☕, Visit me [🌐esagarbhure.com](https://www.sagarbhure.com).
+Developed by [@sagarbhure](https://www.github.com/sagarbhure) 🔨 with ❤️ and ☕, Visit me [🌐sagarbhure.com](https://www.sagarbhure.com).

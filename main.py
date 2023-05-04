@@ -1,3 +1,5 @@
+#! /usr/bin/env python3
+
 from ebpfshield.helpers import TaggedIpList
 import argcomplete
 from bcc import BPF
@@ -6,7 +8,6 @@ import argparse
 import socket
 import struct
 import glob
-import sys
 import os
 import dnslib
 from socket import if_indextoname
@@ -40,7 +41,7 @@ int trace_udp_sendmsg(struct pt_regs *ctx) {
     struct sock *sk = (struct sock *)PT_REGS_PARM1(ctx);
     u16 sport = sk->sk_num;
     u16 dport = sk->sk_dport;
-  
+
     // Processing only packets on port 53.
     // 13568 = ntohs(53);
     if (sport == 13568 || dport == 13568) {
@@ -70,7 +71,7 @@ int trace_udp_sendmsg(struct pt_regs *ctx) {
 int trace_tcp_sendmsg(struct pt_regs *ctx, struct sock *sk) {
     u16 sport = sk->sk_num;
     u16 dport = sk->sk_dport;
-  
+
     // Processing only packets on port 53.
     // 13568 = ntohs(53);
     if (sport == 13568 || dport == 13568) {
@@ -140,7 +141,7 @@ int dns_matching(struct __sk_buff *skb) {
     u8 *cursor = 0;
     // check the IP protocol:
     struct ethernet_t *ethernet = cursor_advance(cursor, sizeof(*ethernet));
-    
+
     if (ethernet->type == ETH_P_IP) {
         struct ip_t *ip = cursor_advance(cursor, sizeof(*ip));
         u8 proto;
@@ -203,8 +204,10 @@ int dns_matching(struct __sk_buff *skb) {
 }
 '''
 
+
 def print_dns(cpu, data, size):
     import ctypes as ct
+
     class SkbEvent(ct.Structure):
         _fields_ = [
             ("ifindex", ct.c_uint32),
@@ -213,7 +216,8 @@ def print_dns(cpu, data, size):
             ("uid", ct.c_uint32),
             ("gid", ct.c_uint32),
             ("comm", ct.c_char * 64),
-            ("raw", ct.c_ubyte * (size - ct.sizeof(ct.c_uint32 * 5) - ct.sizeof(ct.c_char * 64)))
+            ("raw", ct.c_ubyte *
+             (size - ct.sizeof(ct.c_uint32 * 5) - ct.sizeof(ct.c_char * 64)))
         ]
     # We get our 'port_val' structure and also the packet itself in the 'raw' field:
     sk = ct.cast(data, ct.POINTER(SkbEvent)).contents
@@ -226,7 +230,6 @@ def print_dns(cpu, data, size):
     # So we try to get the process name by its PID:
     try:
         with open(f'/proc/{sk.pid}/comm', 'r') as proc_comm:
-
 
             proc_name = proc_comm.read().rstrip()
     except:
@@ -241,14 +244,17 @@ def print_dns(cpu, data, size):
     # The length of the IP packet header is not fixed due to the arbitrary
     # number of parameters.
     # Of all the possible IP header we are only interested in 20 bytes:
-    (length, _, _, _, _, proto, _, saddr, daddr) = unpack('!BBHLBBHLL', ip_packet[:20])
+    (length, _, _, _, _, proto, _, saddr, daddr) = unpack(
+        '!BBHLBBHLL', ip_packet[:20])
     # The direct length is written in the second half of the first byte (0b00001111 = 15):
     len_iph = length & 15
     # Length is written in 32-bit words, convert it to bytes:
     len_iph = len_iph * 4
     # Convert addresses from numbers to IPs:
-    saddr = ".".join(map(str, [saddr >> 24 & 0xff, saddr >> 16 & 0xff, saddr >> 8 & 0xff, saddr & 0xff]))
-    daddr = ".".join(map(str, [daddr >> 24 & 0xff, daddr >> 16 & 0xff, daddr >> 8 & 0xff, daddr & 0xff]))
+    saddr = ".".join(map(
+        str, [saddr >> 24 & 0xff, saddr >> 16 & 0xff, saddr >> 8 & 0xff, saddr & 0xff]))
+    daddr = ".".join(map(
+        str, [daddr >> 24 & 0xff, daddr >> 16 & 0xff, daddr >> 8 & 0xff, daddr & 0xff]))
 
     # If the transport layer protocol is UDP:
     if proto == 17:
@@ -286,15 +292,18 @@ def print_dns(cpu, data, size):
         # We are only interested in A (1) and AAAA (28) records:
         for q in dns_data.questions:
             if q.qtype == 1 or q.qtype == 28:
-                print(f'COMM={proc_name} PID={sk.pid} TGID={sk.tgid} DEV={ifname} PROTO={NET_PROTO[proto]} SRC={saddr} DST={daddr} SPT={sport} DPT={dport} UID={sk.uid} GID={sk.gid} DNS_QR=0 DNS_NAME={q.qname} DNS_TYPE={DNS_QTYPE[q.qtype]}')
+                print(
+                    f'COMM={proc_name} PID={sk.pid} TGID={sk.tgid} DEV={ifname} PROTO={NET_PROTO[proto]} SRC={saddr} DST={daddr} SPT={sport} DPT={dport} UID={sk.uid} GID={sk.gid} DNS_QR=0 DNS_NAME={q.qname} DNS_TYPE={DNS_QTYPE[q.qtype]}')
     # Response:
     elif dns_data.header.qr == 1:
         # We are only interested in A (1) and AAAA (28) records:
         for rr in dns_data.rr:
             if rr.rtype == 1 or rr.rtype == 28:
-                print(f'COMM={proc_name} PID={sk.pid} TGID={sk.tgid} DEV={ifname} PROTO={NET_PROTO[proto]} SRC={saddr} DST={daddr} SPT={sport} DPT={dport} UID={sk.uid} GID={sk.gid} DNS_QR=1 DNS_NAME={rr.rname} DNS_TYPE={DNS_QTYPE[rr.rtype]} DNS_DATA={rr.rdata}')
+                print(
+                    f'COMM={proc_name} PID={sk.pid} TGID={sk.tgid} DEV={ifname} PROTO={NET_PROTO[proto]} SRC={saddr} DST={daddr} SPT={sport} DPT={dport} UID={sk.uid} GID={sk.gid} DNS_QR=1 DNS_NAME={rr.rname} DNS_TYPE={DNS_QTYPE[rr.rtype]} DNS_DATA={rr.rdata}')
     else:
         print('Invalid DNS query type.')
+
 
 def process_netevent(cpu, data, size):
     global lists
@@ -303,7 +312,6 @@ def process_netevent(cpu, data, size):
     ip_address = socket.inet_ntoa(struct.pack("I", event.address))
     ip_port = socket.inet_ntoa(struct.pack("I", event.port))
 #    ip_comm = socket.inet_ntoa(struct.pack("I", event.comm))
-
 
     if args.verbose:
         printb(b"\t%s (%d) %s:%d" % (
@@ -318,7 +326,8 @@ def process_netevent(cpu, data, size):
                 ))
             elif args.block == "dump":
                 os.kill(event.pid, 19)
-                os.system("gcore -o /tmp/ebpfshield-{}.core {} 2>/dev/null".format(event.ts, event.pid))
+                os.system(
+                    "gcore -o /tmp/ebpfshield-{}.core {} 2>/dev/null".format(event.ts, event.pid))
                 os.kill(event.pid, 9)
                 print("Client:{} (pid:{}) eBPFShield took a dump in /tmp/ (ip-blacklist:{})".format(
                     event.comm, event.pid, ip_address
@@ -334,9 +343,12 @@ def process_netevent(cpu, data, size):
                     event.comm, event.pid, ip_address
                 ))
 
+
 parser = argparse.ArgumentParser()
-parser.add_argument("--block", default="print", choices=["print", "dump", "suspend", "kill"])
-parser.add_argument("--feature", default="ebpf_ipintelligence", choices=["ebpf_ipintelligence", "ebpf_monitor"])
+parser.add_argument("--block", default="print",
+                    choices=["print", "dump", "suspend", "kill"])
+parser.add_argument("--feature", default="ebpf_ipintelligence",
+                    choices=["ebpf_ipintelligence", "ebpf_monitor"])
 parser.add_argument("--verbose", action="store_true")
 argcomplete.autocomplete(parser)
 
@@ -354,24 +366,25 @@ else:
 
 if args.feature == "ebpf_ipintelligence":
     bpf_sock = BPF(src_file="ebpfshield.c")
-    #bpf_sock.attach_kprobe(event=b.get_syscall_fnname("connect"), fn_name="probe_connect_enter")
+    # bpf_sock.attach_kprobe(event=b.get_syscall_fnname("connect"), fn_name="probe_connect_enter")
     bpf_sock.attach_kprobe(event="tcp_v4_connect", fn_name="tcp_v4")
-    #bpf_sock.attach_kprobe(event="udp_sendmsg", fn_name="udp_v4")
+    # bpf_sock.attach_kprobe(event="udp_sendmsg", fn_name="udp_v4")
     print('The program is running. Press Ctrl-C to abort.')
     bpf_sock["events"].open_perf_buffer(process_netevent)
 
-#b["events"].open_perf_buffer(process_netevent)
+# b["events"].open_perf_buffer(process_netevent)
 elif args.feature == "ebpf_monitor":
-    #delete me
-    #b.attach_kprobe(event="tcp_sendmsg", fn_name="trace_tcp_sendmsg")
+    # delete me
+    # b.attach_kprobe(event="tcp_sendmsg", fn_name="trace_tcp_sendmsg")
     bpf_kprobe = BPF(text=C_BPF_KPROBE)
     bpf_kprobe.attach_kprobe(event="tcp_sendmsg", fn_name="trace_tcp_sendmsg")
     bpf_kprobe.attach_kprobe(event="udp_sendmsg", fn_name="trace_udp_sendmsg")
-    #delete me
+    # delete me
 
     bpf_sock = BPF(text=BPF_SOCK_TEXT)
 
-    function_dns_matching = bpf_sock.load_func("dns_matching", BPF.SOCKET_FILTER)
+    function_dns_matching = bpf_sock.load_func(
+        "dns_matching", BPF.SOCKET_FILTER)
     BPF.attach_raw_socket(function_dns_matching, "")
 
     print('The program is running. Press Ctrl-C to abort.')
@@ -379,10 +392,8 @@ elif args.feature == "ebpf_monitor":
     bpf_sock["dns_events"].open_perf_buffer(print_dns)
 
 
-
 while 1:
     try:
         bpf_sock.perf_buffer_poll()
     except KeyboardInterrupt:
         exit()
-

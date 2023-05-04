@@ -34,4 +34,3 @@ class TaggedIpList:
 
     def ip2int(self, ip):
         return reduce(lambda out, x: (out << 8) + int(x), ip.split('.'), 0)
-

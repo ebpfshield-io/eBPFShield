@@ -1,117 +1,146 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <title>🛡️ eBPFShield</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Text Animation</title>
+    <style>
+      ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background-color: #333;
+      }
 
-<head>
-<title>🛡️ eBPFShield</title>
-	<meta charset="UTF-8">
-	<meta name="viewport" content=
-		"width=device-width, initial-scale=1.0">
-	<title>Text Animation</title>
-	<style>
-	ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  background-color: #333;
-}
+      li {
+        float: left;
+      }
 
-li {
-  float: left;
-}
+      li a {
+        display: block;
+        color: white;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+      }
 
-li a {
-  display: block;
-  color: white;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-}
+      li a:hover:not(.active) {
+        background-color: #111;
+      }
 
-li a:hover:not(.active) {
-  background-color: #111;
-}
+      .active {
+        background-color: #023020;
+      }
+      * {
+        padding: 0;
+        margin: 0;
+        font-family: sans-serif;
+      }
 
-.active {
-  background-color: #023020;
-}
-		* {
-			padding: 0;
-			margin: 0;
-			font-family: sans-serif;
-		}
+      body {
+        background: black;
+      }
 
-		body {
-			background: black;
-		}
+      .container {
+        text-align: center;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100%;
+      }
 
-		.container {
-			text-align: center;
-			position: absolute;
-			top: 50%;
-			left: 50%;
-			transform: translate(-50%, -50%);
-			width: 100%;
-		}
+      .container span {
+        display: block;
+      }
 
-		.container span {
-			display: block;
-		}
+      .text1 {
+        color: white;
+        font-size: 70px;
+        font-weight: 700;
+        letter-spacing: 8px;
+        margin-bottom: 20px;
+        background: black;
+        position: relative;
+        animation: text 3s 1;
+      }
 
-		.text1 {
-			color: white;
-			font-size: 70px;
-			font-weight: 700;
-			letter-spacing: 8px;
-			margin-bottom: 20px;
-			background: black;
-			position: relative;
-			animation: text 3s 1;
-		}
+      .text2 {
+        font-size: 30px;
+        color: darkgreen;
+        font-family: Georgia, serif;
+      }
 
-		.text2 {
-			font-size: 30px;
-			color: darkgreen;
-			font-family: Georgia, serif;
-		}
+      @keyframes text {
+        0% {
+          color: black;
+          margin-bottom: -40px;
+        }
 
-		@keyframes text {
-			0% {
-				color: black;
-				margin-bottom: -40px;
-			}
+        30% {
+          letter-spacing: 25px;
+          margin-bottom: -40px;
+        }
 
-			30% {
-				letter-spacing: 25px;
-				margin-bottom: -40px;
-			}
+        85% {
+          letter-spacing: 8px;
+          margin-bottom: -40px;
+        }
+      }
+    </style>
+  </head>
 
-			85% {
-				letter-spacing: 8px;
-				margin-bottom: -40px;
-			}
-		}
-	</style>
-</head>
-
-<body>
-<ul>
-  <li><a style="font-family:verdana;" class="active" href="#home">Home</a></li>
-  <li><a style="font-family:verdana;" href="Network Monitor.mp4">DNS Monitoring</a></li>
-  <li><a style="font-family:verdana;" href="Block Blacklist IP.mp4">IP Intelligence</a></li>
-  <li><a style="font-family:verdana;" href="roadmap.html">Project Roadmap</a></li>
-  <li><a style="font-family:verdana;" href="mailto:sagarbhureaerospace@gmail.com">Contact</a></li>
-</ul>
-	<div class="container">
-		<div class="row">
-			<span class="text1">Hello!</span>
-			<span class="text2">eBPFShield</span>
-			<span class="text2">Advanced host monitoring and threat detection with eBPF</span>
-		</div>
-	</div>
-	            <div style="position: relative">
-
-	<p style=  "font-family:verdana; position: fixed; bottom: 0; width:100%; text-align: center; color:white; font-size:18px;"> Contributor: Sagar Bhure </p></div>
-</body>
-
+  <body>
+    <ul>
+      <li>
+        <a style="font-family: verdana" class="active" href="#home">Home</a>
+      </li>
+      <li>
+        <a style="font-family: verdana" href="Network Monitor.mp4"
+          >DNS Monitoring</a
+        >
+      </li>
+      <li>
+        <a style="font-family: verdana" href="Block Blacklist IP.mp4"
+          >IP Intelligence</a
+        >
+      </li>
+      <li>
+        <a style="font-family: verdana" href="roadmap.html">Project Roadmap</a>
+      </li>
+      <li>
+        <a
+          style="font-family: verdana"
+          href="mailto:sagarbhureaerospace@gmail.com"
+          >Contact</a
+        >
+      </li>
+    </ul>
+    <div class="container">
+      <div class="row">
+        <span class="text1">Hello!</span>
+        <span class="text2">eBPFShield</span>
+        <span class="text2"
+          >Advanced host monitoring and threat detection with eBPF</span
+        >
+      </div>
+    </div>
+    <div style="position: relative">
+      <p
+        style="
+          font-family: verdana;
+          position: fixed;
+          bottom: 0;
+          width: 100%;
+          text-align: center;
+          color: white;
+          font-size: 18px;
+        "
+      >
+        Contributor: Sagar Bhure
+      </p>
+    </div>
+  </body>
 </html>

@@ -1,6 +1,7 @@
 
 from functools import reduce
 
+
 class TaggedIpList:
     def __init__(self, tag, handle):
         self.addresses = []

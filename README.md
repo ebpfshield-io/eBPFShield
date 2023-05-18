@@ -41,7 +41,7 @@ Say goodbye to constantly monitoring your servers with tcpdump and hello to a mo
 **Available for ~~Windows~~, Linux and Ubuntu.**
 
 <p align="center">
-  <img src = "https://github.com/ebpfshield-io/eBPFShield/blob/main/.github/images/linux_ubuntu.png" width=350>
+  <img src = "https://github.com/ebpfshield-io/eBPFShield/blob/main/docs/images/linux_ubuntu.png" width=350>
 </p>
 
 ## 🛠 Features
